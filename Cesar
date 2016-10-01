@@ -1,0 +1,19 @@
+def encrypt_caesar(plaintext,shift):
+    ciphertext = ''
+    for symbol in plaintext:
+        newIndex = ord(symbol) + shift
+        if (newIndex > ord('Z') and newIndex < ord('a')) or newIndex > ord('z'):
+            newIndex -= 26
+        ciphertext += chr(newIndex)
+    print(ciphertext)
+    return ciphertext
+
+def decrypt_caesar(ciphertext,shift):
+    plaintext= ''
+    for symbol in ciphertext:
+        newIndex=ord(symbol) - shift
+        if (newIndex > ord('Z') and newIndex < ord('a')) or newIndex < ord('A'):
+            newIndex +=26
+        plaintext += chr(newIndex)
+    print(plaintext)
+    return plaintext
