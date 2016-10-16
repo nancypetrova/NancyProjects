@@ -108,8 +108,8 @@ def average_age(tit_data):
     for dict in tit_data:
         count += 1
         sum += float(dict["age"])
-    average_age = sum / count
-    return average_age
+    averageAge = sum / count
+    return averageAge
 
 
 pp(average_age(titanic_data))  # 29.88
@@ -183,18 +183,14 @@ def amountOFSurvived(tit_data):
         #### Задание 9: Сколько в каждой группе выживших по отдельности для
         #### мужчин и женщин
 def amountOfSurvivedAndDeadInEachGroup(tit_data):
-        listOfMales = []
-        listOfFemales = []
-        amountInEach=[]
-        x=[]
-        y=[]
-        for dict in tit_data:
-            if dict['sex'] == 'male':
-                listOfMales.append(dict)
-            else:
-                listOfFemales.append(dict)
-        x.append(amountOFSurvived(listOfMales))
-        y.append(amountOFSurvived(listOfFemales))
-        amountInEach.append(x)
-        amountInEach.append(y)
-        return (amountInEach)
+    listOfMales = []
+    listOfFemales = []
+    amountInEach = []
+    for dict in tit_data:
+        if dict['sex'] == 'male':
+            listOfMales.append(dict)
+        else:
+            listOfFemales.append(dict)
+    amountInEach.append(["males",amountOFSurvived(listOfMales)])
+    amountInEach.append(["females",amountOFSurvived(listOfFemales)])
+    return (amountInEach)
