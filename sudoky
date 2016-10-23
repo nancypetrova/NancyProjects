@@ -1,0 +1,165 @@
+def read_sudoku(filename):
+    """ Прочитать Судоку из указанного файла """
+    digits = [c for c in open(filename).read() if c in '123456789.']
+    grid = group(digits, 9)
+    return grid
+
+
+def display(values):
+    """Вывод Судоку """
+    width = 2
+    line = '+'.join(['-' * (width * 3)] * 3)
+    for row in range(9):
+        print(''.join(values[row][col].center(width) + ('|' if str(col) in '25' else '') for col in range(9)))
+        if str(row) in '25':
+            print(line)
+    print()
+
+
+def group(values, n):
+    begining = 0
+    ending = n
+    main=[]
+    while len(main)!= len(values)/n:
+        main.append(values[begining:ending])
+        x = ending
+        begining = ending
+        ending = x+n
+    return main
+
+def get_row(values, pos):
+    """ Возвращает все значения для номера строки, указанной в pos
+
+    >>> get_row([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
+    ['1', '2', '.']
+    >>> get_row([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (1, 0))
+    ['4', '.', '6']
+    >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
+    ['.', '8', '9']
+    """
+    listRow = []
+    x = pos[0]//3
+    if x == 0:
+        listRow = values[0:3]
+    elif x == 1:
+        listRow = values[3:6]
+    elif x == 2:
+        listRow = values[6:9]
+    elif x == 3:
+        listRow = values[9:12]
+    elif x == 4:
+        listRow = values[12:15]
+    elif x == 5:
+        listRow = values[15:18]
+        pass
+    elif x == 6:
+        listRow = values[18:21]
+    elif x == 7:
+        listRow = values[21:24]
+    elif x == 8:
+        listRow = values[24:27]
+    return listRow
+
+def get_col(values, pos):
+    """ Возвращает все значения для номера столбца, указанного в pos
+
+    >>> get_col([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']], (0, 0))
+    ['1', '4', '7']
+    >>> get_col([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']], (0, 1))
+    ['2', '.', '8']
+    >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
+    ['3', '6', '9']
+    """
+    list = []
+    x = pos[1]
+    i = pos[0]
+    while len(list) != 9:
+        list.append(values[i][x])
+        i += 3
+    return list
+
+
+def get_block(values, pos):
+    """ Возвращает все значения из квадрата, в который попадает позиция pos """
+    if pos[0] in range(0, 6, 3):
+        z = 0
+    elif pos[0]in range(1, 7, 3):
+        z = 1
+    elif pos[0] in range(2, 8, 3):
+        z = 2
+    elif pos[0] in range(9, 15, 3):
+        z = 9
+    elif pos[0] in range(10, 16, 3):
+        z = 10
+    elif pos[0] in range(11, 17, 3):
+        z = 11
+    elif pos[0] in range(18, 24, 3):
+        z = 18
+    elif pos[0] in range(19, 25, 3):
+        z = 19
+    else: z = 20
+    list = []
+    for i in range(3):
+        list.append(values[z])
+        z += 3
+    return list
+
+def find_empty_positions(grid):
+    """ Найти первую свободную позицию в пазле
+
+    >>> find_empty_positions([['1', '2', '.'], ['4', '5', '6'], ['7', '8', '9']])
+    (0, 2)
+    >>> find_empty_positions([['1', '2', '3'], ['4', '.', '6'], ['7', '8', '9']])
+    (1, 1)
+    >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
+    (2, 0)
+    """
+    position = ()
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == '.':
+                position = (i, j)
+        break
+
+    return position
+
+def find_possible_values(grid, pos):
+    a = get_block(grid, pos)
+    b = get_col(grid, pos)
+    c = get_row(grid, pos)
+    for i in range(9):
+        if a.count(i) != 0:
+            break
+        if b.count(i) != 0:
+            break
+        if c.count(i) != 0:
+            break
+
+    return i
+
+
+def solve(grid):
+    """ Решение пазла, заданного в grid """
+    find_empty_positions(grid)
+
+    """ Как решать Судоку?
+        1. Найти свободную позицию
+        2. Найти все возможные значения, которые могут находиться на этой позиции
+        3. Для каждого возможного значения:
+            3.1. Поместить это значение на эту позицию
+            3.2. Продолжить решать оставшуюся часть пазла
+    """
+    pass
+
+
+def check_solution(solution):
+    """ Если решение solution верно, то вернуть True, в противном случае False """
+    pass
+
+
+if __name__ == '__main__':
+    for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
+        grid = read_sudoku(fname)
+        display(grid)
+        solution = solve(grid)
+        display(solution)
