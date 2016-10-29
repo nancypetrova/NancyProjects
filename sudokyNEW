@@ -1,0 +1,137 @@
+def read_sudoku(filename):
+    """ Прочитать Судоку из указанного файла """
+    digits = [c for c in open(filename).read() if c in '123456789.']
+    grid = group(digits, 9)
+    return grid
+
+
+def display(values):
+    """Вывод Судоку """
+    width = 2
+    line = '+'.join(['-' * (width * 3)] * 3)
+    for row in range(9):
+        print(''.join(values[row][col].center(width) + ('|' if str(col) in '25' else '') for col in range(9)))
+        if str(row) in '25':
+            print(line)
+    print()
+
+
+def group(values, n):
+    begining = 0
+    ending = n
+    main = []
+    while len(main) != len(values) / n:
+        main.append(values[begining:ending])
+        x = ending
+        begining = ending
+        ending = x + n
+    return main
+
+
+def get_row(values, pos):
+    return values[pos[0]]
+
+
+def get_col(values, pos):
+    list = []
+    for i in range(len(values)):
+        list.append(values[i][pos[1]])
+    return list
+
+
+def get_block(values, pos):
+    """ Возвращает все значения из квадрата, в который попадает позиция pos """
+    list = []
+    newList = []
+    listi = []
+    if pos[0] in range(0, 3):
+
+        for i in range(3):
+            listi = get_row(values, (i, pos[1]))
+            if pos[1] in range(0, 3):
+                list.append(listi[0:3])
+            if pos[1] in range(3, 6):
+                list.append(listi[3:6])
+            elif pos[1] in range(6, 9):
+                list.append(listi[6:9])
+    if pos[0] in range(3, 6):
+        for i in range(3):
+            listi = get_row(values, (i + 3, pos[1]))
+            if pos[1] in range(0, 3):
+                list.append(listi[0:3])
+            if pos[1] in range(3, 6):
+                list.append(listi[3:6])
+            elif pos[1] in range(6, 9):
+                list.append(listi[6:9])
+    if pos[0] in range(6, 9):
+        for i in range(3):
+            listi = get_row(values, (i + 6, pos[1]))
+            if pos[1] in range(0, 3):
+                list.append(listi[0:3])
+            if pos[1] in range(3, 6):
+                list.append(listi[3:6])
+            elif pos[1] in range(6, 9):
+                list.append(listi[6:9])
+    for i in range(len(list)):
+        for j in range(len(list)):
+            newList.append(list[i][j])
+
+    return newList
+
+
+def find_empty_positions(grid):
+    position = ()
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j] == '.':
+                position = (i, j)
+                break
+        break
+
+    return position
+
+
+def find_possible_values(grid, pos):
+    listofPossible = []
+    listOfNumbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    for i in range(len(listOfNumbers)):
+        if (get_col(grid, pos).count(listOfNumbers[i]) == 0) and (get_row(grid, pos).count(listOfNumbers[i]) == 0) and (
+                    get_block(grid, pos).count(listOfNumbers[i]) == 0):
+            listofPossible.append(listOfNumbers[i])
+    return listofPossible
+
+
+def solve(grid):
+    """ Решение пазла, заданного в grid """
+    position = find_empty_positions(grid)
+    possibles = find_possible_values(grid, position)
+    pos1 = position[0]
+    pos2 = position[1]
+    for each in possibles:
+        grid.insert([pos1][pos2], each)
+        solve(grid)
+    solution = grid
+    """ Как решать Судоку?
+        1. Найти свободную позицию
+        2. Найти все возможные значения, которые могут находиться на этой позиции
+        3. Для каждого возможного значения:
+            3.1. Поместить это значение на эту позицию
+            3.2. Продолжить решать оставшуюся часть пазла
+    """
+    return grid
+
+
+def check_solution(solution):
+    listOfNumbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    for i in solution:
+        for j in listOfNumbers:
+
+    return True
+
+
+if __name__ == '__main__':
+    for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
+        grid = read_sudoku(fname)
+        display(grid)
+        solution = solve(grid)
+        display(solution)
